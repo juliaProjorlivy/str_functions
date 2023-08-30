@@ -163,47 +163,55 @@ char *myFgets(char *line, int n, FILE *stream)
     return line;
 }
 
+// string substring
 const char *myStrstr(const char *lineB, const char *lineA)
 {
-    int suma = 0, sumb = 0;
+    int suma = 0;
+    int sumb = 0;
     int first = (int)(lineB[0]);
     int x = 2;
-    const int bign = 1e9+7;
+    const int bign = 1e9 + 7;
     size_t lena = myStrlen(lineA);
     size_t lenb = myStrlen(lineB);
-    for(int j = 0; j < lena; j++)
+    if(lena > lenb) 
+        return NULL;
+    size_t j = 0;
+    for(; j < lena; j++)
     {
-        first*=x;
+        first *= x;
         suma = (suma + (int)(lineA[j]))*x;
         sumb = (sumb + (int)(lineB[j]))*x;
     }
-    suma%=bign;
-    sumb%=bign;
-    size_t i = 0;
+
     if(suma == sumb)
     {
-        return &(lineB[i]);
+        return &(lineB[j-lena]);
     }
-    for(; i < lenb-lena+1; i++)
+
+    while (j < lenb)
     {
-        sumb = ((sumb + (int)(lineB[i]) - first) * x) % bign;
+        sumb = ((sumb + (int)(lineB[j]) - first) * x) % bign; //size_t kek = first << 1;
         if(sumb == suma)
         {
-            return &(lineB[i]);
+            return &(lineB[j-lena + 1]);
         }
-        first = ((int)(first / (int)lineB[i]) * ((int)lineB[i+1])) % bign;
+        first = (((int)(first / (int)lineB[j-lena])) * ((int)lineB[j - lena + 1])) % bign;
+        j++;
     }
     return NULL;
-}//рабина карпа хэширование 
+}//рабина карпа хеширование
+
+// в функции битовые
+// polynom_hash()
 
 
 int main()
 {
-    char src[] = "xaxa";
+    char src[] = "xaxaabcd";
     char dest[10] = "yyyy";
     size_t n = 2;
     // printf("%s\n", myStrncat(dest, src, 2));
-    const char *p = myStrstr(src, "xa");
+    const char *p = myStrstr(src, "abcd");
     if(p !=NULL)
     {
         printf("%c\n", *p);
